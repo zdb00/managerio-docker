@@ -7,11 +7,19 @@ on:
         required: false
         type: string
       update_latest:
-        description: 'Promote this reviewed version to latest'
+        description: 'Promote this version to latest'
         type: boolean
         default: true
   release:
     types: [published]
+  workflow_call:
+    inputs:
+      manager_version:
+        required: true
+        type: string
+      update_latest:
+        type: boolean
+        default: true
 permissions:
   contents: read
 concurrency:
@@ -19,7 +27,7 @@ concurrency:
   cancel-in-progress: false
 jobs:
   prepare:
-    if: github.event_name == 'workflow_dispatch' || !github.event.release.prerelease
+    if: github.event_name != 'release' || !github.event.release.prerelease
     runs-on: ubuntu-24.04
     outputs:
       version: ${{ steps.version.outputs.version }}
