@@ -98,6 +98,8 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
+          secrets: |
+            github_token=${{ secrets.GITHUB_TOKEN }}
           build-args: |
             MANAGER_VERSION=${{ needs.prepare.outputs.version }}
             SOURCE_URL=https://github.com/${{ github.repository }}

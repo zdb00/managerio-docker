@@ -49,6 +49,8 @@ jobs:
           platforms: linux/${{ matrix.arch }}
           push: false
           tags: managerio-docker:ci
+          secrets: |
+            github_token=${{ secrets.GITHUB_TOKEN }}
           build-args: |
             MANAGER_VERSION=${{ steps.version.outputs.value }}
             SOURCE_URL=https://github.com/${{ github.repository }}

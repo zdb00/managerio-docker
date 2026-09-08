@@ -6,7 +6,7 @@ RUN apt-get update \
     && rm -rf /var/lib/apt/lists/*
 COPY MANAGER_VERSION /build/MANAGER_VERSION
 COPY scripts/download-manager.sh /build/download-manager.sh
-RUN bash /build/download-manager.sh
+RUN --mount=type=secret,id=github_token bash /build/download-manager.sh
 
 FROM mcr.microsoft.com/dotnet/runtime-deps:9.0-bookworm-slim AS runtime
 ARG MANAGER_VERSION
