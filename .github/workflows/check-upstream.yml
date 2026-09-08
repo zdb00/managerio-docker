@@ -1,0 +1,54 @@
+name: Check upstream
+on:
+  schedule:
+    - cron: '23 3 * * *'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: managerio-upstream
+  cancel-in-progress: false
+jobs:
+  check:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    permissions:
+      contents: write
+      pull-requests: write
+    outputs:
+      head: ${{ steps.pr.outputs.pull-request-head-sha }}
+      changed: ${{ steps.upstream.outputs.newer }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ github.event.repository.default_branch }}
+      - name: Check official release
+        id: upstream
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: ./scripts/check-upstream.sh --update
+      - name: Propose reviewed version bump
+        if: steps.upstream.outputs.newer == 'true'
+        id: pr
+        uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8.1.1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          branch: automation/manager-version
+          delete-branch: true
+          add-paths: MANAGER_VERSION
+          commit-message: 'Update Manager to ${{ steps.upstream.outputs.latest }}'
+          title: 'Update Manager to ${{ steps.upstream.outputs.latest }}'
+          body: |
+            The official Manager release API reports a newer stable release with Linux x64 and arm64 assets and SHA-256 digests.
+
+            Review upstream release notes, licensing eligibility and backup/restore readiness before merging. The Check upstream workflow explicitly runs both native CI tests because GITHUB_TOKEN PRs do not trigger pull_request workflows. Review those results; run CI manually on this branch if branch protection requires a separate check.
+
+            Merging this PR does not publish an image. Publish a reviewed repository release or dispatch Publish separately.
+  test-proposal:
+    needs: check
+    if: needs.check.outputs.changed == 'true' && needs.check.outputs.head != ''
+    permissions:
+      contents: read
+    uses: ./.github/workflows/ci.yml
+    with:
+      checkout_ref: ${{ needs.check.outputs.head }}

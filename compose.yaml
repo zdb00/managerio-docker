@@ -1,0 +1,15 @@
+services:
+  managerio:
+    image: "${MANAGER_IMAGE:-ghcr.io/zdb00/managerio-docker:latest}"
+    container_name: managerio
+    restart: unless-stopped
+    stop_grace_period: 30s
+    ports:
+      - "${MANAGER_BIND_ADDRESS:-0.0.0.0}:${MANAGER_PORT:-8080}:8080"
+    volumes:
+      - "${MANAGER_DATA_PATH:-./data}:/data"
+    environment:
+      TZ: "${TZ:-UTC}"
+      PUID: "${PUID:-1000}"
+      PGID: "${PGID:-1000}"
+      UMASK: "${UMASK:-0027}"

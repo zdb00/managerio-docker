@@ -1,0 +1,9 @@
+# Allowlist: business data, credentials and repository metadata cannot enter the build context.
+**
+!Dockerfile
+!MANAGER_VERSION
+!LICENSE
+!chromium-wrapper
+!docker-entrypoint.sh
+!scripts/
+!scripts/download-manager.sh

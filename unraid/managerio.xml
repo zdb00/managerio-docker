@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Container version="2">
+  <Name>Manager.io</Name>
+  <Repository>ghcr.io/zdb00/managerio-docker:latest</Repository>
+  <Registry>https://ghcr.io/zdb00/managerio-docker</Registry>
+  <Network>bridge</Network>
+  <Privileged>false</Privileged>
+  <Support>https://github.com/zdb00/managerio-docker/issues</Support>
+  <Project>https://www.manager.io/</Project>
+  <Overview>Unofficial community packaging of proprietary Manager.io Server Edition. A Manager Server licence is required for production use. Back up /data before upgrades. Prefer an exact version tag for accounting data.</Overview>
+  <Category>Productivity:</Category>
+  <WebUI>http://[IP]:[PORT:8080]/</WebUI>
+  <TemplateURL>https://raw.githubusercontent.com/zdb00/managerio-docker/main/unraid/managerio.xml</TemplateURL>
+  <ExtraParams>--restart=unless-stopped --stop-timeout=30</ExtraParams>
+  <Config Name="Web port" Target="8080" Default="8080" Mode="tcp" Description="Host port; change to 8280 if 8080 is occupied. Keep container port 8080." Type="Port" Display="always" Required="true" Mask="false">8080</Config>
+  <Config Name="Application data" Target="/data" Default="/mnt/user/appdata/managerio" Mode="rw" Description="Persistent Manager data. Back up before upgrading." Type="Path" Display="always" Required="true" Mask="false">/mnt/user/appdata/managerio</Config>
+  <Config Name="Timezone" Target="TZ" Default="Australia/Perth" Mode="" Description="IANA timezone" Type="Variable" Display="always" Required="true" Mask="false">Australia/Perth</Config>
+  <Config Name="User ID" Target="PUID" Default="99" Mode="" Description="Runtime numeric UID; 99 is common on Unraid." Type="Variable" Display="always" Required="true" Mask="false">99</Config>
+  <Config Name="Group ID" Target="PGID" Default="100" Mode="" Description="Runtime numeric GID; 100 is common on Unraid." Type="Variable" Display="always" Required="true" Mask="false">100</Config>
+  <Config Name="File creation mask" Target="UMASK" Default="0027" Mode="" Description="0027 restricts access to owner/group. Use 0002 only if group write access is intended." Type="Variable" Display="always" Required="true" Mask="false">0027</Config>
+</Container>

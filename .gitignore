@@ -1,0 +1,16 @@
+.env
+.env.*
+!.env.example
+/data/
+/backups/
+*.manager
+*.manager-*
+*.key
+*.pem
+*.tar.gz
+*.zip
+ManagerServer
+.DS_Store
+
+__pycache__/
+*.pyc
