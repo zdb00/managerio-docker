@@ -1,4 +1,3 @@
-# syntax=docker/dockerfile:1
 FROM --platform=$BUILDPLATFORM mcr.microsoft.com/dotnet/runtime-deps:8.0-bookworm-slim AS download
 ARG TARGETARCH
 ARG MANAGER_VERSION

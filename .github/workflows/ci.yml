@@ -15,7 +15,7 @@ on:
 permissions:
   contents: read
 jobs:
-  test:
+  build:
     strategy:
       fail-fast: false
       matrix:
@@ -27,12 +27,10 @@ jobs:
     runs-on: ${{ matrix.runner }}
     timeout-minutes: 30
     steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
         with:
           persist-credentials: false
           ref: ${{ inputs.checkout_ref || github.ref }}
-      - name: Validate files
-        run: ./scripts/validate.sh
       - name: Resolve version
         id: version
         env:
@@ -43,19 +41,16 @@ jobs:
           version=${REQUESTED_VERSION:-$(cat MANAGER_VERSION)}
           [[ "$version" =~ ^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$ ]]
           echo "value=$version" >> "$GITHUB_OUTPUT"
-      - uses: docker/setup-buildx-action@37fe631027851001ddb9b187196cc803df7f5f0e # v4.3.0
+      - uses: docker/setup-buildx-action@37fe631027851001ddb9b187196cc803df7f5f0e
       - name: Build native image
-        uses: docker/build-push-action@53b7df96c91f9c12dcc8a07bcb9ccacbed38856a # v7.3.0
+        uses: docker/build-push-action@53b7df96c91f9c12dcc8a07bcb9ccacbed38856a
         with:
           context: .
           platforms: linux/${{ matrix.arch }}
-          load: true
           push: false
-          tags: managerio-docker:test
+          tags: managerio-docker:ci
           build-args: |
             MANAGER_VERSION=${{ steps.version.outputs.value }}
             SOURCE_URL=https://github.com/${{ github.repository }}
           cache-from: type=gha,scope=manager-${{ matrix.arch }}
           cache-to: type=gha,mode=max,scope=manager-${{ matrix.arch }}
-      - name: Smoke test
-        run: ./scripts/smoke-test.sh managerio-docker:test

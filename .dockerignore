@@ -1,4 +1,3 @@
-# Allowlist: business data, credentials and repository metadata cannot enter the build context.
 **
 !Dockerfile
 !MANAGER_VERSION
