@@ -1,4 +1,4 @@
-FROM --platform=$BUILDPLATFORM mcr.microsoft.com/dotnet/runtime-deps:8.0-bookworm-slim AS download
+FROM --platform=$BUILDPLATFORM mcr.microsoft.com/dotnet/runtime-deps:9.0-bookworm-slim AS download
 ARG TARGETARCH
 ARG MANAGER_VERSION
 RUN apt-get update \
@@ -8,7 +8,7 @@ COPY MANAGER_VERSION /build/MANAGER_VERSION
 COPY scripts/download-manager.sh /build/download-manager.sh
 RUN bash /build/download-manager.sh
 
-FROM mcr.microsoft.com/dotnet/runtime-deps:8.0-bookworm-slim AS runtime
+FROM mcr.microsoft.com/dotnet/runtime-deps:9.0-bookworm-slim AS runtime
 ARG MANAGER_VERSION
 ARG SOURCE_URL=https://github.com/zdb00/managerio-docker
 LABEL org.opencontainers.image.title="Manager.io Server (community Docker packaging)" \
